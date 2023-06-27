@@ -44,10 +44,10 @@ public class Loan implements Serializable {
     @Column(name = "email", unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String email;
 
-    @Column(name = "phone_number", unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(unique = true, nullable = false)
     private String phoneNumber;
 
-
+    private String idNumber;
     private String repaymentStatus;
 
     private String loanStatus;
