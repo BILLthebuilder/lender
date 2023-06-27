@@ -39,13 +39,10 @@ public class Loan implements Serializable {
     private BigDecimal amount;
 
     @Column(name ="msisdn", unique = true, nullable = false)
-    private String msisdn;
+    private String phoneNumber;
 
     @Column(name = "email", unique = true, nullable = false, columnDefinition = "VARCHAR(50)")
     private String email;
-
-    @Column(unique = true, nullable = false)
-    private String phoneNumber;
 
     private String idNumber;
     private String repaymentStatus;
