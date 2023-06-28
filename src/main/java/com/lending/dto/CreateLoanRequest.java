@@ -3,7 +3,7 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public record RequestLoanDto(
+public record CreateLoanRequest(
 
         @NotEmpty(message = "amount cannot be blank")
         BigDecimal amount,
