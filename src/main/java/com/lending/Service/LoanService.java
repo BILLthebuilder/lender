@@ -1,6 +1,6 @@
 package com.lending.Service;
 
-import com.lending.Repository.LoanRepository;
+import com.lending.repository.LoanRepository;
 import com.lending.dto.CreateLoanRequest;
 import com.lending.model.Loan;
 import lombok.RequiredArgsConstructor;

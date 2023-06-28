@@ -1,4 +1,4 @@
-package com.lending.Repository;
+package com.lending.repository;
 
 import com.lending.model.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
