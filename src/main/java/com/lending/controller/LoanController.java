@@ -46,7 +46,7 @@ public class LoanController {
         }
     }
 
-    @PostMapping("topup")
+    @PutMapping("topup")
     public ResponseEntity<GenericResponse> topupLoan(@RequestBody @Valid TopupLoanRequest request, Errors errors){
         GenericResponse response;
 
@@ -59,7 +59,7 @@ public class LoanController {
         try {
             if(loanService.topupLoan(request)){
                 response = new GenericResponse("Loan topup successful","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }else {
                 response = new GenericResponse("Loan topup failed", "FAILED");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -71,7 +71,7 @@ public class LoanController {
         }
     }
 
-    @PostMapping("topup")
+    @PutMapping("repay")
     public ResponseEntity<GenericResponse> repayLoan(@RequestBody @Valid RepaymentRequest request, Errors errors){
         GenericResponse response;
 
@@ -84,7 +84,7 @@ public class LoanController {
         try {
             if(loanService.repayLoan(request)){
                 response = new GenericResponse("Loan repayment successful","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }else {
                 response = new GenericResponse("Loan repayment failed", "FAILED");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -96,8 +96,8 @@ public class LoanController {
         }
     }
 
-    @PostMapping("clear")
-    public ResponseEntity<GenericResponse> repayLoan(@RequestBody @Valid ClearOldLoansRequest request, Errors errors){
+    @DeleteMapping("clear")
+    public ResponseEntity<GenericResponse> clearLoan(@RequestBody @Valid ClearOldLoansRequest request, Errors errors){
         GenericResponse response;
 
         if (errors.hasFieldErrors()) {
@@ -109,7 +109,7 @@ public class LoanController {
         try {
             if(loanService.clearOldLoans(request)){
                 response = new GenericResponse("Loan clearing successful","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }else {
                 response = new GenericResponse("Loan clearing failed", "FAILED");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
