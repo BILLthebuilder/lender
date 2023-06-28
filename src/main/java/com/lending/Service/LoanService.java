@@ -36,7 +36,7 @@ public class LoanService {
             loan.setPhoneNumber(request.phoneNumber());
             loan.setEmail(request.email());
             loanRepository.save(loan);
-            SendSms.sendSms(request.phoneNumber(),"Loan request processed succesfully");
+            //SendSms.sendSms(request.phoneNumber(),"Loan request processed succesfully");
             created = true;
         } catch (Exception e) {
             log.error("Error creating loan=%s", e);
@@ -54,7 +54,7 @@ public class LoanService {
             if (loanExists(request.id())) {
                 loan.setAmount(currentAmount.add(request.topupAmount()));
                 loanRepository.save(loan);
-                SendSms.sendSms(request.phoneNumber(),"Loan topup request processed succesfully");
+                //SendSms.sendSms(request.phoneNumber(),"Loan topup request processed succesfully");
                 status = true;
             } else {
                 log.error("Get a loan first to qualify for a topup");
