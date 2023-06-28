@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public record TopupLoanRequest(
         BigDecimal topupAmount,
-        UUID id
+        UUID id,
+
+        String phoneNumber
 ) {
 }
