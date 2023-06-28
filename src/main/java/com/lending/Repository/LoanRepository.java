@@ -11,11 +11,9 @@ import java.util.UUID;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan,Long> {
 
-    Optional<Loan> findById(UUID id);
+   Loan findById(UUID id);
 
-    Optional<Loan> findLoanByEmail(String email);
-
-    Optional<Loan> findLoanByPhoneNumber(String phoneNumber);
+  Loan findLoanByPhoneNumber(String phoneNumber);
 
     Optional<Loan> findLoanByLoanCreationDate(Date date);
 
