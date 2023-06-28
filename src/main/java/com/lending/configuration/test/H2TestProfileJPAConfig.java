@@ -1,4 +1,4 @@
-package com.lending.configuration;
+package com.lending.configuration.test;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class H2TestProfileJPAConfig {
     @Profile("test")
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.hibernate.dialect.MySQL5Dialect");
+        //dataSource.setDriverClassName("org.hibernate.dialect.MySQL5Dialect");
         dataSource.setUrl("jdbc:mysql://localhost:3306/lending-test?createDatabaseIfNotExist=true");
         dataSource.setUsername("root");
         dataSource.setPassword("password");
