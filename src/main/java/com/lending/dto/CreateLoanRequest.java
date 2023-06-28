@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 
 public record CreateLoanRequest(
 
-        @NotEmpty(message = "amount cannot be blank")
         BigDecimal amount,
 
         @NotEmpty(message = "idNumber cannot be blank")
