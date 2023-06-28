@@ -16,7 +16,7 @@ import jakarta.validation.constraints.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/loans")
+@RequestMapping("/api/v1/loans")
 @RequiredArgsConstructor
 public class LoanController {
     private final LoanService loanService;
@@ -45,4 +45,80 @@ public class LoanController {
             return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
+
+    @PostMapping("topup")
+    public ResponseEntity<GenericResponse> topupLoan(@RequestBody @Valid TopupLoanRequest request, Errors errors){
+        GenericResponse response;
+
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+        try {
+            if(loanService.topupLoan(request)){
+                response = new GenericResponse("Loan topup successful","SUCCESS");
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            }else {
+                response = new GenericResponse("Loan topup failed", "FAILED");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            response = new GenericResponse(ex.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @PostMapping("topup")
+    public ResponseEntity<GenericResponse> repayLoan(@RequestBody @Valid RepaymentRequest request, Errors errors){
+        GenericResponse response;
+
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+        try {
+            if(loanService.repayLoan(request)){
+                response = new GenericResponse("Loan repayment successful","SUCCESS");
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            }else {
+                response = new GenericResponse("Loan repayment failed", "FAILED");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            response = new GenericResponse(ex.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @PostMapping("clear")
+    public ResponseEntity<GenericResponse> repayLoan(@RequestBody @Valid ClearOldLoansRequest request, Errors errors){
+        GenericResponse response;
+
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+        try {
+            if(loanService.clearOldLoans(request)){
+                response = new GenericResponse("Loan clearing successful","SUCCESS");
+                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            }else {
+                response = new GenericResponse("Loan clearing failed", "FAILED");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            response = new GenericResponse(ex.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
 }
