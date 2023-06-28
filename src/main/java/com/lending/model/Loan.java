@@ -35,7 +35,7 @@ public class Loan implements Serializable {
     )
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,precision=10, scale=2)
     private BigDecimal amount;
 
     @Column(name ="msisdn", unique = true, nullable = false)
