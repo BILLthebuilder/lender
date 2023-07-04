@@ -1,9 +1,11 @@
 package com.lending.Service;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.sftp.IdentityInfo;
+import org.apache.commons.vfs2.provider.sftp.IdentityProvider;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +15,11 @@ import java.io.File;
 import java.security.PrivateKey;
 
 @Service
+@RequiredArgsConstructor
 public class SftpService {
-    @Autowired
-    private FileSystemManager fileSystemManager;
+
+
+    private final FileSystemManager fileSystemManager;
 
     @Value("${sftp.host}")
     private String sftpHost;
@@ -30,10 +34,11 @@ public class SftpService {
     private String sftpPassword;
 
     @Value("${sftp.privateKey}")
-    private PrivateKey sftpPrivateKey;
+    private String sftpPrivateKeyPath;
 
     @Value("${sftp.remoteFilePath}")
     private String sftpRemoteFilePath;
+
 
     public void uploadFile(String localFilePath) throws FileSystemException {
         FileSystemOptions opts = createDefaultOptions();
@@ -56,9 +61,11 @@ public class SftpService {
         UserAuthenticator auth = new StaticUserAuthenticator(null, sftpUsername, sftpPassword);
         DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
 
-     File pkey = new File(sftpPrivateKey);
-        if (sftpPrivateKey != null) {
-            SftpFileSystemConfigBuilder.getInstance().setIdentities(opts, new IdentityInfo[]{new IdentityInfo(pkey)});
+
+        if (sftpPrivateKeyPath != null) {
+            File keyFile = new File(sftpPrivateKeyPath);
+            IdentityProvider identityInfo = new IdentityInfo(keyFile);
+            SftpFileSystemConfigBuilder.getInstance().setIdentityProvider(opts, identityInfo);
         }
 
         return opts;
