@@ -5,15 +5,10 @@ import com.lending.Service.LoanService;
 import com.lending.dto.*;
 import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.constraints.*;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/loans")
@@ -28,77 +23,17 @@ public class LoanController {
 
     @PutMapping("topup")
     public ResponseEntity<GenericResponse> topupLoan(@RequestBody @Valid TopupLoanRequest request, Errors errors){
-        GenericResponse response;
-
-        if (errors.hasFieldErrors()) {
-            FieldError fieldError = errors.getFieldError();
-            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(response);
-        }
-        try {
-            if(loanService.topupLoan(request)){
-                response = new GenericResponse("Loan topup successful","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
-                response = new GenericResponse("Loan topup failed", "FAILED");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-
-        }catch (Exception ex){
-            response = new GenericResponse(ex.getMessage(), "FAILED");
-            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+       return loanService.topupLoan(request,errors);
     }
 
     @PutMapping("repay")
     public ResponseEntity<GenericResponse> repayLoan(@RequestBody @Valid RepaymentRequest request, Errors errors){
-        GenericResponse response;
-
-        if (errors.hasFieldErrors()) {
-            FieldError fieldError = errors.getFieldError();
-            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(response);
-        }
-        try {
-            if(loanService.repayLoan(request)){
-                response = new GenericResponse("Loan repayment successful","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
-                response = new GenericResponse("Loan repayment failed", "FAILED");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-
-        }catch (Exception ex){
-            response = new GenericResponse(ex.getMessage(), "FAILED");
-            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        return loanService.repayLoan(request,errors);
     }
 
     @DeleteMapping("clear")
     public ResponseEntity<GenericResponse> clearLoan(@RequestBody @Valid ClearOldLoansRequest request, Errors errors){
-        GenericResponse response;
-
-        if (errors.hasFieldErrors()) {
-            FieldError fieldError = errors.getFieldError();
-            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(response);
-        }
-        try {
-            if(loanService.clearOldLoans(request)){
-                response = new GenericResponse("Loan clearing successful","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
-                response = new GenericResponse("Loan clearing failed", "FAILED");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-
-        }catch (Exception ex){
-            response = new GenericResponse(ex.getMessage(), "FAILED");
-            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+       return loanService.clearOldLoans(request,errors);
     }
 
 }

@@ -4,10 +4,7 @@ import com.lending.Util.SendSms;
 import com.lending.dto.*;
 import com.lending.mappers.LoanMapper;
 import com.lending.repository.LoanRepository;
-import com.lending.model.Loan;
-import jakarta.persistence.PersistenceException;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +15,7 @@ import org.springframework.validation.FieldError;
 
 
 
-import jakarta.validation.constraints.*;
-
 import java.math.BigDecimal;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -63,8 +57,16 @@ public class LoanService {
     }
 
     @Transactional
-    public boolean topupLoan(TopupLoanRequest request) {
+    public ResponseEntity<GenericResponse> topupLoan(TopupLoanRequest request, Errors errors) {
         boolean status = false;
+        GenericResponse response;
+
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
         var loan = loanRepository.findById(request.id());
 
         BigDecimal currentAmount = loan.getAmount();
@@ -74,18 +76,31 @@ public class LoanService {
                 loanRepository.save(loan);
                 //SendSms.sendSms(request.phoneNumber(),"Loan topup request processed succesfully");
                 status = true;
+                response = new GenericResponse("Loan topup successful","SUCCESS");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 log.error("Get a loan first to qualify for a topup");
+                response = new GenericResponse("Loan topup failed", "FAILED");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             log.error("Error toping up loan=%s", e);
+            response = new GenericResponse(e.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return status;
     }
 
     @Transactional
-    public boolean repayLoan(RepaymentRequest request) {
+    public ResponseEntity<GenericResponse> repayLoan(RepaymentRequest request, Errors errors) {
         boolean status = false;
+        GenericResponse response;
+
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
         var loan = loanRepository.findById(request.id());
         var repaymentAmont = request.amount();
         var currentLoanAmount = loan.getAmount();
@@ -102,19 +117,31 @@ public class LoanService {
                 loan.setRepaymentStatus(repayMentStatus);
                 loanRepository.save(loan);
                 status = true;
+                response = new GenericResponse("Loan repayment successful","SUCCESS");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 log.error("Get a loan first to allow repayment");
+                response = new GenericResponse("Loan repayment failed", "FAILED");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             log.error("Error repaying loan=%s", e);
+            response = new GenericResponse(e.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
-        return status;
     }
 
     @Transactional
-    public boolean clearOldLoans(ClearOldLoansRequest request) {
+    public ResponseEntity<GenericResponse> clearOldLoans(ClearOldLoansRequest request, Errors errors) {
         boolean status = false;
+        GenericResponse response;
+
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
         var loan = loanRepository.findById(request.id());
         var getCurrentLoanDate = loan.getDateCreated();
         var calendar = Calendar.getInstance();
@@ -130,16 +157,24 @@ public class LoanService {
             if (loanExists(request.id())) {
                 //Check if loan is 6 months old or past 6 months
                 boolean isPastOrEqual = getCurrentLoanDate.before(sixMonthsLater) || getCurrentLoanDate.equals(sixMonthsLater);
-
                 if (isPastOrEqual || repaymentStatus.equalsIgnoreCase("-1")) {
                     loanRepository.delete(loan);
                     status = true;
+                    response = new GenericResponse("Loan clearing successful","SUCCESS");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
+            }else {
+                log.error("Error clearing loan");
+                response = new GenericResponse("Loan clearing failed", "FAILED");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             log.error("Error clearing loan=%s", e);
+            response = new GenericResponse(e.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return status;
+        response = new GenericResponse("ERROR", "FAILED");
+        return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     public boolean loanExists(UUID id) {
