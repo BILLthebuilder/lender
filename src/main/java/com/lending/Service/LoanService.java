@@ -1,54 +1,72 @@
 package com.lending.Service;
 
 import com.lending.Util.SendSms;
-import com.lending.dto.ClearOldLoansRequest;
-import com.lending.dto.RepaymentRequest;
-import com.lending.dto.TopupLoanRequest;
+import com.lending.dto.*;
+import com.lending.mappers.LoanMapper;
 import com.lending.repository.LoanRepository;
-import com.lending.dto.CreateLoanRequest;
 import com.lending.model.Loan;
+import jakarta.persistence.PersistenceException;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+
+
+
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@AllArgsConstructor
 public class LoanService {
 
     private final LoanRepository loanRepository;
 
+    private final LoanMapper loanMapper;
+
+
+
     @Transactional
-    public boolean createLoanRequest(CreateLoanRequest request) {
+    public ResponseEntity<GenericResponse> createLoanRequest(CreateLoanRequest request, Errors errors) {
         boolean created = false;
-
-        var loan = new Loan();
-
+        GenericResponse response = null;
+        if (errors.hasFieldErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
         try {
-            loan.setAmount(request.amount());
-            loan.setIdNumber(request.idNumber());
-            loan.setPhoneNumber(request.phoneNumber());
-            loan.setEmail(request.email());
+            var loan = loanMapper.toLoan(request);
             loanRepository.save(loan);
             //SendSms.sendSms(request.phoneNumber(),"Loan request processed succesfully");
             created = true;
+            response = new GenericResponse("Loan created successfully","SUCCESS");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
+            created = false;
             log.error("Error creating loan=%s", e);
+            response = new GenericResponse(e.getMessage(), "FAILED");
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
-        return created;
     }
 
     @Transactional
     public boolean topupLoan(TopupLoanRequest request) {
         boolean status = false;
         var loan = loanRepository.findById(request.id());
+
         BigDecimal currentAmount = loan.getAmount();
         try {
             if (loanExists(request.id())) {

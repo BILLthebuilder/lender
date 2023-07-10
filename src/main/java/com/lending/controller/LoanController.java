@@ -23,27 +23,7 @@ public class LoanController {
 
     @PostMapping("request")
     public ResponseEntity<GenericResponse> createLoan(@RequestBody @Valid CreateLoanRequest request, Errors errors){
-        GenericResponse response;
-
-        if (errors.hasFieldErrors()) {
-            FieldError fieldError = errors.getFieldError();
-            response = new GenericResponse(fieldError.getDefaultMessage(), "FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(response);
-        }
-        try {
-            if(loanService.createLoanRequest(request)){
-                response = new GenericResponse("Loan created successfully","SUCCESS");
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
-            }else {
-                response = new GenericResponse("That loan already exists", "FAILED");
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
-
-        }catch (Exception ex){
-            response = new GenericResponse(ex.getMessage(), "FAILED");
-            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+     return loanService.createLoanRequest(request,errors);
     }
 
     @PutMapping("topup")
