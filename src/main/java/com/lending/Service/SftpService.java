@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.security.PrivateKey;
 
-@Service
+//@Service
 @RequiredArgsConstructor
 public class SftpService {
 
