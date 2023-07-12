@@ -1,17 +1,16 @@
 package com.lending.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
-
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,18 +20,8 @@ import java.util.UUID;
 @Table(name = "tbloans")
 public class Loan implements Serializable {
     @Id
-    @Column(name = "id", columnDefinition = "BINARY(16)")
-    @GeneratedValue(generator = "custom-uuid")
-    @GenericGenerator(
-            name = "custom-uuid",
-            strategy = "org.hibernate.id.UUIDGenerator",
-            parameters = {
-                    @Parameter(
-                            name = "uuid_gen_strategy_class",
-                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-                    )
-            }
-    )
+    @GeneratedValue
+    @UuidGenerator(style = UuidGenerator.Style.TIME)
     private UUID id;
 
     @Column(nullable = false,precision=10, scale=2)
@@ -55,23 +44,29 @@ public class Loan implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date loanTopupDate;
 
-    @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    @Temporal(value = TemporalType.TIMESTAMP)
+//    @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+//    @Temporal(value = TemporalType.TIMESTAMP)
+//    private Date dateCreated;
+
+    @CreationTimestamp
     private Date dateCreated;
 
-    @PrePersist
-    void dateCreatedAt() {
-        this.dateCreated = new Date();
-    }
+//    @PrePersist
+//    void dateCreatedAt() {
+//        this.dateCreated = new Date();
+//    }
 
-    @Column(name = "date_updated", columnDefinition = "DATETIME ON UPDATE CURRENT_TIMESTAMP")
-    @Temporal(value = TemporalType.TIMESTAMP)
+//    @Column(name = "date_updated", columnDefinition = "DATETIME ON UPDATE CURRENT_TIMESTAMP")
+//    @Temporal(value = TemporalType.TIMESTAMP)
+//    private Date dateUpdated;
+
+    @UpdateTimestamp
     private Date dateUpdated;
 
-    @PreUpdate
-    void dateUpdatedAt() {
-        this.dateUpdated = new Date();
-    }
+//    @PreUpdate
+//    void dateUpdatedAt() {
+//        this.dateUpdated = new Date();
+//    }
 
     @Column(name = "status", columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean status;
