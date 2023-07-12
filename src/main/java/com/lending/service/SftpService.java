@@ -1,4 +1,4 @@
-package com.lending.Service;
+package com.lending.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.vfs2.*;
@@ -7,14 +7,11 @@ import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.sftp.IdentityInfo;
 import org.apache.commons.vfs2.provider.sftp.IdentityProvider;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.security.PrivateKey;
 
-//@Service
+//@service
 @RequiredArgsConstructor
 public class SftpService {
 
