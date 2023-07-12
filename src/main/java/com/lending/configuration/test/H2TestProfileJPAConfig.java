@@ -19,16 +19,12 @@ public class H2TestProfileJPAConfig {
     @Bean
     @Profile("test")
     public DataSource dataSource() {
+        //test credentials
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        //dataSource.setDriverClassName("org.hibernate.dialect.MySQL5Dialect");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/lending-test?createDatabaseIfNotExist=true");
+        dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/lending-test?createDatabaseIfNotExist=true");
         dataSource.setUsername("root");
         dataSource.setPassword("password");
 
         return dataSource;
     }
-
-    // configure entityManagerFactory
-    // configure transactionManager
-    // configure additional Hibernate properties
 }
