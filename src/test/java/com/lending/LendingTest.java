@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LendingTest {
+ class LendingTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,7 +40,7 @@ public class LendingTest {
     ObjectMapper objectMapper = new ObjectMapper();
     @Test
     @Order(1)
-    public void loanShouldBecreated() throws Exception {
+     void loanShouldBecreated() throws Exception {
         BigDecimal amount = new BigDecimal(15000.00);
         var createLoanRequest = new CreateLoanRequest(amount,"123456","254722000000","test@email.com");
 
@@ -52,7 +52,7 @@ public class LendingTest {
 
     @Test
     @Order(2)
-    public void loanShouldtopup() throws Exception {
+     void loanShouldtopup() throws Exception {
         BigDecimal amount = new BigDecimal(15000.00);
         var loan = loanRepository.findSingleRecord();
 
@@ -66,7 +66,7 @@ public class LendingTest {
 
     @Test
     @Order(3)
-    public void loanShouldrepay() throws Exception {
+     void loanShouldrepay() throws Exception {
         BigDecimal amount = new BigDecimal(150.00);
         var loan = loanRepository.findSingleRecord();
         var repaymentRequest = new RepaymentRequest("",loan.getId(),amount);
@@ -79,7 +79,7 @@ public class LendingTest {
 
     @Test
     @Order(4)
-    public void loanShouldClearOld() throws Exception {
+     void loanShouldClearOld() throws Exception {
         var loan = loanRepository.findSingleRecord();
         var clearOldLoansRequest = new ClearOldLoansRequest(null,loan.getId());
 

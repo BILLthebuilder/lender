@@ -1,7 +1,7 @@
 package com.lending.controller;
 
 
-import com.lending.Service.LoanService;
+import com.lending.service.LoanService;
 import com.lending.dto.*;
 import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
