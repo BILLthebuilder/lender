@@ -1,0 +1,1 @@
+ docker run --network springboot-mysql-net --name springboot-mysql-container -d -p 8080:8080 bill/lending-repayment-api
