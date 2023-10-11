@@ -1,4 +1,4 @@
-# lending-repayment-api
+# lender
 ## About
 
 This is a Lending repayment API that allows customers to:
